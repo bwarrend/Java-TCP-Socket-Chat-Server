@@ -10,6 +10,11 @@ public class ServerJFrame extends javax.swing.JFrame {
         log = new Logger("log.txt");
         log.log("====NEW SESSION====");
         log.log("");
+        
+        /**
+         * Grab the server's external IP address for the server host to 
+         * reference.
+         */
         try {
             URL url = new URL("http://checkip.dyndns.org");
             Scanner s = new Scanner(url.openStream());
@@ -23,6 +28,7 @@ public class ServerJFrame extends javax.swing.JFrame {
             jLabel1.setText("Cannot find external IP address.");
             log.log("Cannot find external IP address.");
         }
+        
         
         this.getRootPane().setDefaultButton(jButton1);
         jTextArea1.setText("Enter Port to listen on...");
