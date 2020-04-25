@@ -3,9 +3,13 @@ import java.net.*;
 
 public class ServerJFrame extends javax.swing.JFrame {
     int port;
+    Logger log;
 
     public ServerJFrame() {
         initComponents();
+        log = new Logger("log.txt");
+        log.log("====NEW SESSION====");
+        log.log("");
         try {
             URL url = new URL("http://checkip.dyndns.org");
             Scanner s = new Scanner(url.openStream());
@@ -13,9 +17,11 @@ public class ServerJFrame extends javax.swing.JFrame {
             ipAddress = ipAddress.substring(ipAddress.indexOf(": ") + 2
                                             ,ipAddress.indexOf("</body></html>"));
             jLabel1.setText("External IP: " + ipAddress);
+            log.log("External IP: " + ipAddress);
 
         } catch (Exception ex) {
             jLabel1.setText("Cannot find external IP address.");
+            log.log("Cannot find external IP address.");
         }
         
         this.getRootPane().setDefaultButton(jButton1);
@@ -112,11 +118,12 @@ public class ServerJFrame extends javax.swing.JFrame {
             try{
                 port = Integer.parseInt(jTextField1.getText());
                 jTextField1.setText("");
+                log.log("Entered Port: " + port);
                 
                 jTextField1.setVisible(false);
                 jButton1.setVisible(false);
                 
-                new ChatServer(port, jTextArea1).start();
+                new ChatServer(port, jTextArea1, log).start();
             }catch(Exception e){
                 port = -1;                
             }

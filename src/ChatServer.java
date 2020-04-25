@@ -13,13 +13,15 @@ public class ChatServer extends Thread{
     private JTextArea jTextArea1;
     private Set<String> userNames = new HashSet<>();
     private Set<UserThread> userThreads = new HashSet<>();
+    private Logger log;
     
     /**
      * Constructor: All we need is a port in order to start the server 
      */
-    public ChatServer(int port, JTextArea jTextArea1) {
+    public ChatServer(int port, JTextArea jTextArea1, Logger log) {
         this.port = port;
         this.jTextArea1 = jTextArea1;
+        this.log = log;
     }
     
     /**
@@ -30,11 +32,12 @@ public class ChatServer extends Thread{
         try (ServerSocket serverSocket = new ServerSocket(port)) {
  
             jTextArea1.setText("Chat Server is listening on port " + port);
- 
+            log.log("Listening on port " + port);
             while (true) {
                 Socket socket = serverSocket.accept();
                 jTextArea1.setText(jTextArea1.getText() + "\nUser '" 
-                        + socket.getInetAddress() + "' has connected.");                        
+                        + socket.getInetAddress() + "' has connected.");
+                log.log("User '" + socket.getInetAddress() + "' has connected.");
                 //Create our userthread, start it and add it to our hash set
                 UserThread newUser = new UserThread(socket, this, jTextArea1);
                 userThreads.add(newUser);
@@ -43,6 +46,7 @@ public class ChatServer extends Thread{
         } catch (IOException ex) {
             jTextArea1.setText(jTextArea1.getText() + "Error: " 
                     + ex.getMessage());
+            log.log("Error: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -76,6 +80,7 @@ public class ChatServer extends Thread{
             userThreads.remove(user);
             jTextArea1.setText(jTextArea1.getText() + "\nUser " + userName 
                     + " has left the server.");
+            log.log("User: " + userName + " | " + user.getSocket()+" left.");
         }
     }
  
